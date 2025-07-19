@@ -98,7 +98,8 @@
         line-height: 1.2;
     }
 
-    .hero h1 span {
+    .hero h1 .name {
+        display: inline-block;
         background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
         -webkit-background-clip: text;
         background-clip: text;
@@ -326,9 +327,9 @@
 
     .skill-progress {
         height: 100%;
+        width: 0;
         border-radius: 5px;
         background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
-        animation: fillBar 2s ease-out forwards;
     }
 
     /* Projects Section */
@@ -506,17 +507,6 @@
     .copyright {
         color: #666;
         font-size: 0.9rem;
-    }
-
-
-
-    @keyframes fillBar {
-        from {
-            width: 0;
-        }
-        to {
-            width: 100%;
-        }
     }
 
     /* Responsive Design */
