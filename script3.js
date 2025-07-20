@@ -366,5 +366,6 @@ links.forEach(link => {
     link.addEventListener('click', () => {
         navLinks.classList.remove('active');
         hamburger.classList.remove('active');
+        document.body.classList.remove('no-scroll');
     });
 });
