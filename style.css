@@ -22,6 +22,10 @@
         overflow-x: hidden;
     }
 
+    body.no-scroll {
+        overflow: hidden;
+    }
+
     /* Navigation */
     nav {
         display: flex;
