@@ -1,7 +1,92 @@
-// Enhanced skill bars animation with counter effect
+/* ========================================
+   DOM ELEMENT SELECTIONS
+   ======================================== */
 const skillBars = document.querySelectorAll('.skill-progress');
 const skillPercentages = document.querySelectorAll('.skill-name span:last-child');
+const projectCards = document.querySelectorAll('.project-card');
+const contactForm = document.querySelector('.contact-form');
+const formInputs = document.querySelectorAll('.form-input, .form-textarea');
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const navbar = document.querySelector('nav');
+const links = document.querySelectorAll('.nav-links a');
+const heroTitle = document.querySelector('.hero h1');
+const sections = document.querySelectorAll('section');
 
+/* ========================================
+   NAVIGATION & SCROLL BEHAVIOR
+   ======================================== */
+
+// Hamburger Menu Logic
+hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+    document.body.classList.toggle('no-scroll');
+});
+
+// Close menu when a link is clicked
+links.forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.classList.remove('no-scroll'); 
+    });
+});
+
+// Enhanced Scroll Event Logic - STEP 2 PLACED HERE
+let lastScrollTop = 0;
+navbar.style.transition = 'all 0.3s ease';
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // CRITICAL: Only apply scroll animations when mobile menu is NOT active
+    if (!navLinks.classList.contains('active')) {
+        // Background changes
+        if (scrollTop > 100) {
+            navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.95)';
+            navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+            navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.8)';
+            navbar.style.backdropFilter = 'blur(10px)';
+        }
+        
+        // Hide/show navbar on scroll
+        if (scrollTop > lastScrollTop && scrollTop > 200) {
+            navbar.style.transform = 'translateY(-100%)';
+        } else {
+            navbar.style.transform = 'translateY(0)';
+        }
+    } else {
+        // When mobile menu is active, ensure navbar stays visible and has solid background
+        navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.98)';
+        navbar.style.backdropFilter = 'blur(20px)';
+        navbar.style.transform = 'translateY(0)'; // Always keep it visible
+    }
+    
+    lastScrollTop = scrollTop;
+});
+
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        const headerHeight = navbar.offsetHeight;
+        const targetPosition = target.offsetTop - headerHeight - 20;
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+    });
+});
+
+/* ========================================
+   ANIMATIONS & EFFECTS
+   ======================================== */
+
+// Enhanced skill bars animation with counter effect
 const animateSkillBars = (entries, observer) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -11,21 +96,14 @@ const animateSkillBars = (entries, observer) => {
             const targetPercentage = parseInt(percentageElement.textContent);
             const targetWidth = `${targetPercentage}%`;
 
-            // --- Start of new animation logic ---
-
-            // 1. Set the initial state with no transition
+            // Set initial state with no transition
             skillBar.style.transition = 'none';
             skillBar.style.width = '0%';
+            void skillBar.offsetHeight; // Force reflow
 
-            // 2. Force the browser to recognize the change
-            void skillBar.offsetHeight;
-
-            // 3. Now, add the transition and set the final width to start the animation
+            // Add transition and animate to final width
             skillBar.style.transition = 'width 2s cubic-bezier(0.4, 0, 0.2, 1)';
             skillBar.style.width = targetWidth;
-
-            // --- End of new animation logic ---
-
 
             // Animate percentage counter
             let currentPercentage = 0;
@@ -62,24 +140,7 @@ skillBars.forEach(bar => {
     skillObserver.observe(bar);
 });
 
-// Smooth scrolling for navigation links with offset for fixed header
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        const headerHeight = document.querySelector('nav').offsetHeight;
-        const targetPosition = target.offsetTop - headerHeight - 20;
-
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Project cards hover effects with tilt animation
-const projectCards = document.querySelectorAll('.project-card');
-
+// Project cards hover effects
 projectCards.forEach(card => {
     card.addEventListener('mouseenter', function(e) {
         this.style.transform = 'translateY(-10px) rotateX(5deg)';
@@ -90,7 +151,7 @@ projectCards.forEach(card => {
         this.style.transform = 'translateY(0) rotateX(0deg)';
     });
 
-    // Add 3D tilt effect based on mouse position
+    // 3D tilt effect based on mouse position
     card.addEventListener('mousemove', function(e) {
         const rect = this.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -105,11 +166,11 @@ projectCards.forEach(card => {
     });
 });
 
-// Form validation and interactive feedback
-const contactForm = document.querySelector('.contact-form');
-const formInputs = document.querySelectorAll('.form-input, .form-textarea');
+/* ========================================
+   FORM HANDLING
+   ======================================== */
 
-// Add floating label effect
+// Form validation and interactive feedback
 formInputs.forEach(input => {
     const label = input.previousElementSibling;
 
@@ -129,7 +190,6 @@ formInputs.forEach(input => {
         this.style.borderColor = '#333';
     });
 
-    // Real-time validation
     input.addEventListener('input', function() {
         validateField(this);
     });
@@ -170,12 +230,10 @@ contactForm.addEventListener('submit', function(e) {
     const submitBtn = this.querySelector('.submit-btn');
     const originalText = submitBtn.textContent;
 
-    // Animate button
     submitBtn.textContent = 'Sending...';
     submitBtn.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-blue))';
     submitBtn.disabled = true;
 
-    // Simulate form submission
     setTimeout(() => {
         submitBtn.textContent = '✓ Sent Successfully!';
         submitBtn.style.background = 'var(--neon-green)';
@@ -186,7 +244,6 @@ contactForm.addEventListener('submit', function(e) {
             submitBtn.disabled = false;
             this.reset();
 
-            // Reset label positions
             formInputs.forEach(input => {
                 const label = input.previousElementSibling;
                 label.style.color = '#ccc';
@@ -199,71 +256,13 @@ contactForm.addEventListener('submit', function(e) {
     }, 1500);
 });
 
-// Hamburger Menu Logic - Must be defined before scroll listener
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const links = document.querySelectorAll('.nav-links a');
+/* ========================================
+   TYPEWRITER EFFECT
+   ======================================== */
 
-hamburger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    hamburger.classList.toggle('active');
-    // Add or remove the no-scroll class from the body
-    document.body.classList.toggle('no-scroll');
-});
-
-// Close menu when a link is clicked
-links.forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        hamburger.classList.remove('active');
-        // Remove no-scroll class to unlock scrolling
-        document.body.classList.remove('no-scroll'); 
-    });
-});
-
-// IMPROVED: Navbar background change on scroll - with mobile menu check
-let lastScrollTop = 0;
-const navbar = document.querySelector('nav');
-
-window.addEventListener('scroll', function() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    // CRITICAL: Only apply scroll animations when mobile menu is NOT active
-    if (!navLinks.classList.contains('active')) {
-        // Background changes
-        if (scrollTop > 100) {
-            navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.95)';
-            navbar.style.backdropFilter = 'blur(20px)';
-        } else {
-            navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.8)';
-            navbar.style.backdropFilter = 'blur(10px)';
-        }
-        
-        // Hide/show navbar on scroll
-        if (scrollTop > lastScrollTop && scrollTop > 200) {
-            navbar.style.transform = 'translateY(-100%)';
-        } else {
-            navbar.style.transform = 'translateY(0)';
-        }
-    } else {
-        // When mobile menu is active, ensure navbar stays visible and has solid background
-        navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.98)';
-        navbar.style.backdropFilter = 'blur(20px)';
-        navbar.style.transform = 'translateY(0)'; // Always keep it visible
-    }
-    
-    lastScrollTop = scrollTop;
-});
-
-// Add transition to navbar
-navbar.style.transition = 'all 0.3s ease';
-
-// Sequential typewriter effect for the entire hero title
-const heroTitle = document.querySelector('.hero h1');
 const typewriterDelay = 2000;
-const speed = 100; // Typing speed in milliseconds
+const speed = 100;
 
-// A reusable function that types text and returns a promise
 const type = (element, text) => {
     return new Promise(resolve => {
         let i = 0;
@@ -273,37 +272,33 @@ const type = (element, text) => {
                 i++;
                 setTimeout(typeChar, speed);
             } else {
-                resolve(); // Signal that this part is done typing
+                resolve();
             }
         }
         typeChar();
     });
 };
 
-// The main function to control the typing sequence
 const runTypewriterSequence = async () => {
-    // This line ensures we start with no text at all
     heroTitle.innerHTML = ''; 
 
-    // 1. Type the first part
     await type(heroTitle, "Hi, I'm ");
 
-    // 2. Create the styled span and type the name into it
     const nameSpan = document.createElement('span');
     nameSpan.className = 'name';
     heroTitle.appendChild(nameSpan);
     await type(nameSpan, "Emma Miller");
 
-    // 3. Add a line break and type the final part
     heroTitle.appendChild(document.createElement('br'));
     await type(heroTitle, "Web Developer");
 };
 
-// Start the entire sequence after a delay
 setTimeout(runTypewriterSequence, typewriterDelay);
 
-// Add scroll-triggered animations for sections
-const sections = document.querySelectorAll('section');
+/* ========================================
+   SECTION ANIMATIONS
+   ======================================== */
+
 const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -327,12 +322,11 @@ sections.forEach(section => {
 document.querySelector('.hero').style.opacity = '1';
 document.querySelector('.hero').style.transform = 'translateY(0)';
 
-// Add particle cursor effect (optional - can be heavy on performance)
-let particles = [];
-const particleCount = 5;
+/* ========================================
+   PARTICLE EFFECTS
+   ======================================== */
 
 document.addEventListener('mousemove', function(e) {
-    // Throttle particle creation
     if (Math.random() > 0.8) {
         createParticle(e.clientX, e.clientY);
     }
