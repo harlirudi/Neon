@@ -527,8 +527,23 @@
         }
     }
 
+    /* Hamburger Menu Styles */
+    .hamburger {
+        display: none; /* Hidden by default on desktop */
+        cursor: pointer;
+    }
+
+    .hamburger .bar {
+        display: block;
+        width: 25px;
+        height: 3px;
+        margin: 5px auto;
+        background-color: var(--text-color);
+        transition: all 0.3s ease-in-out;
+    }
+
     /* Responsive Design Updates */
-@media (max-width: 768px) {
+    @media (max-width: 768px) {
     .nav-links {
         position: fixed;
         left: -100%; /* Start off-screen */
@@ -624,18 +639,5 @@
         background: var(--neon-pink);
     }
 
-    /* Hamburger Menu Styles */
-    .hamburger {
-        display: none; /* Hidden by default on desktop */
-        cursor: pointer;
-    }
-
-    .hamburger .bar {
-        display: block;
-        width: 25px;
-        height: 3px;
-        margin: 5px auto;
-        background-color: var(--text-color);
-        transition: all 0.3s ease-in-out;
-    }
+    
     
