@@ -345,3 +345,22 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Hamburger Menu Logic
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const links = document.querySelectorAll('.nav-links a');
+
+hamburger.addEventListener('click', () => {
+    // Toggle the 'active' class to show/hide the menu
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+});
+
+// Close menu when a link is clicked
+links.forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        hamburger.classList.remove('active');
+    });
+});
