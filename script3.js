@@ -12,7 +12,7 @@ const animateSkillBars = (entries, observer) => {
             const targetWidth = `${targetPercentage}%`;
 
             // --- Start of new animation logic ---
-            
+
             // 1. Set the initial state with no transition
             skillBar.style.transition = 'none';
             skillBar.style.width = '0%';
@@ -30,7 +30,7 @@ const animateSkillBars = (entries, observer) => {
             // Animate percentage counter
             let currentPercentage = 0;
             const increment = targetPercentage / 100;
-            
+
             const countAnimation = setInterval(() => {
                 currentPercentage += increment;
                 if (currentPercentage >= targetPercentage) {
@@ -39,7 +39,7 @@ const animateSkillBars = (entries, observer) => {
                 }
                 percentageElement.textContent = Math.round(currentPercentage) + '%';
             }, 20);
-            
+
             // Add pulse effect when animation completes
             setTimeout(() => {
                 skillBar.style.boxShadow = '0 0 15px var(--neon-blue)';
@@ -47,7 +47,7 @@ const animateSkillBars = (entries, observer) => {
                     skillBar.style.boxShadow = 'none';
                 }, 500);
             }, 2100);
-            
+
             observer.unobserve(entry.target);
         }
     });
@@ -69,7 +69,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const target = document.querySelector(this.getAttribute('href'));
         const headerHeight = document.querySelector('nav').offsetHeight;
         const targetPosition = target.offsetTop - headerHeight - 20;
-        
+
         window.scrollTo({
             top: targetPosition,
             behavior: 'smooth'
@@ -85,11 +85,11 @@ projectCards.forEach(card => {
         this.style.transform = 'translateY(-10px) rotateX(5deg)';
         this.style.transition = 'transform 0.3s ease';
     });
-    
+
     card.addEventListener('mouseleave', function(e) {
         this.style.transform = 'translateY(0) rotateX(0deg)';
     });
-    
+
     // Add 3D tilt effect based on mouse position
     card.addEventListener('mousemove', function(e) {
         const rect = this.getBoundingClientRect();
@@ -97,10 +97,10 @@ projectCards.forEach(card => {
         const centerY = rect.top + rect.height / 2;
         const mouseX = e.clientX;
         const mouseY = e.clientY;
-        
+
         const rotateX = (mouseY - centerY) / 10;
         const rotateY = (centerX - mouseX) / 10;
-        
+
         this.style.transform = `translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 });
@@ -112,14 +112,14 @@ const formInputs = document.querySelectorAll('.form-input, .form-textarea');
 // Add floating label effect
 formInputs.forEach(input => {
     const label = input.previousElementSibling;
-    
+
     input.addEventListener('focus', function() {
         label.style.color = 'var(--neon-blue)';
         label.style.transform = 'translateY(-5px)';
         label.style.fontSize = '0.9rem';
         this.style.borderColor = 'var(--neon-blue)';
     });
-    
+
     input.addEventListener('blur', function() {
         if (!this.value) {
             label.style.color = '#ccc';
@@ -128,7 +128,7 @@ formInputs.forEach(input => {
         }
         this.style.borderColor = '#333';
     });
-    
+
     // Real-time validation
     input.addEventListener('input', function() {
         validateField(this);
@@ -138,7 +138,7 @@ formInputs.forEach(input => {
 function validateField(field) {
     const value = field.value.trim();
     let isValid = false;
-    
+
     switch(field.type) {
         case 'email':
             isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -150,7 +150,7 @@ function validateField(field) {
         default:
             isValid = value.length > 0;
     }
-    
+
     if (isValid) {
         field.style.borderColor = 'var(--neon-green)';
         field.style.boxShadow = '0 0 5px rgba(128, 255, 219, 0.3)';
@@ -166,26 +166,26 @@ function validateField(field) {
 // Form submission with success animation
 contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const submitBtn = this.querySelector('.submit-btn');
     const originalText = submitBtn.textContent;
-    
+
     // Animate button
     submitBtn.textContent = 'Sending...';
     submitBtn.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-blue))';
     submitBtn.disabled = true;
-    
+
     // Simulate form submission
     setTimeout(() => {
         submitBtn.textContent = '✓ Sent Successfully!';
         submitBtn.style.background = 'var(--neon-green)';
-        
+
         setTimeout(() => {
             submitBtn.textContent = originalText;
             submitBtn.style.background = 'linear-gradient(90deg, var(--neon-blue), var(--neon-pink))';
             submitBtn.disabled = false;
             this.reset();
-            
+
             // Reset label positions
             formInputs.forEach(input => {
                 const label = input.previousElementSibling;
@@ -202,30 +202,32 @@ contactForm.addEventListener('submit', function(e) {
 // Navbar background change on scroll
 let lastScrollTop = 0;
 const navbar = document.querySelector('nav');
+const navLinks = document.querySelector('.nav-links'); // Make sure navLinks is defined here
 
 window.addEventListener('scroll', function() {
-    // Add this line to stop the function if the menu is active
-    if (navLinks.classList.contains('active')) return;
-
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    if (scrollTop > 100) {
-        navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.95)';
-        navbar.style.backdropFilter = 'blur(20px)';
-    } else {
-        navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.8)';
-        navbar.style.backdropFilter = 'blur(10px)';
+
+    // This block now checks if the menu is NOT active before running
+    if (!navLinks.classList.contains('active')) {
+        if (scrollTop > 100) {
+            navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.95)';
+            navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+            navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.8)';
+            navbar.style.backdropFilter = 'blur(10px)';
+        }
+        
+        // Hide/show navbar on scroll
+        if (scrollTop > lastScrollTop && scrollTop > 200) {
+            navbar.style.transform = 'translateY(-100%)';
+        } else {
+            navbar.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollTop = scrollTop;
     }
-    
-    // Hide/show navbar on scroll
-    if (scrollTop > lastScrollTop && scrollTop > 200) {
-        navbar.style.transform = 'translateY(-100%)';
-    } else {
-        navbar.style.transform = 'translateY(0)';
-    }
-    
-    lastScrollTop = scrollTop;
 });
+
 
 // Add transition to navbar
 navbar.style.transition = 'all 0.3s ease';
@@ -325,9 +327,9 @@ function createParticle(x, y) {
         z-index: 9999;
         animation: particleFade 1s ease-out forwards;
     `;
-    
+
     document.body.appendChild(particle);
-    
+
     setTimeout(() => {
         particle.remove();
     }, 1000);
@@ -351,7 +353,7 @@ document.head.appendChild(style);
 
 // Hamburger Menu Logic
 const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
+// const navLinks = document.querySelector('.nav-links'); // This is already defined above
 const links = document.querySelectorAll('.nav-links a');
 
 hamburger.addEventListener('click', () => {
@@ -366,6 +368,7 @@ links.forEach(link => {
     link.addEventListener('click', () => {
         navLinks.classList.remove('active');
         hamburger.classList.remove('active');
-        document.body.classList.remove('no-scroll');
+        // This was the missing line to unlock scrolling
+        document.body.classList.remove('no-scroll'); 
     });
 });
