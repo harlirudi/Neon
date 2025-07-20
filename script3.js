@@ -204,6 +204,9 @@ let lastScrollTop = 0;
 const navbar = document.querySelector('nav');
 
 window.addEventListener('scroll', function() {
+    // Add this line to stop the function if the menu is active
+    if (navLinks.classList.contains('active')) return;
+
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
     if (scrollTop > 100) {
@@ -352,9 +355,10 @@ const navLinks = document.querySelector('.nav-links');
 const links = document.querySelectorAll('.nav-links a');
 
 hamburger.addEventListener('click', () => {
-    // Toggle the 'active' class to show/hide the menu
     navLinks.classList.toggle('active');
     hamburger.classList.toggle('active');
+    // Add or remove the no-scroll class from the body
+    document.body.classList.toggle('no-scroll');
 });
 
 // Close menu when a link is clicked
